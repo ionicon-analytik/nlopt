@@ -40,7 +40,9 @@
 
 #include "cdirect.h"
 
+#ifdef NLOPT_BUILD_GPL_LICENSED
 #include "luksan.h"
+#endif
 
 #include "crs.h"
 
@@ -573,6 +575,7 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
             return praxis_(nlopt_get_param(opt, "t0_tol", 0.0), DBL_EPSILON, step, ni, x, f_bound, opt, &stop, minf);
         }
 
+#ifdef NLOPT_BUILD_GPL_LICENSED
     case NLOPT_LD_LBFGS:
         return luksan_plis(ni, f, f_data, lb, ub, x, minf, &stop, opt->vector_storage);
 
@@ -585,6 +588,7 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
     case NLOPT_LD_TNEWTON_PRECOND:
     case NLOPT_LD_TNEWTON_PRECOND_RESTART:
         return luksan_pnet(ni, f, f_data, lb, ub, x, minf, &stop, opt->vector_storage, 1 + (algorithm - NLOPT_LD_TNEWTON) % 2, 1 + (algorithm - NLOPT_LD_TNEWTON) / 2);
+#endif
 
     case NLOPT_GN_CRS2_LM:
         if (!finite_domain(n, lb, ub))

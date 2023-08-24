@@ -45,6 +45,7 @@ option (NLOPT_OCTAVE "build octave bindings" ON)
 option (NLOPT_MATLAB "build matlab bindings" ON)
 option (NLOPT_GUILE "build guile bindings" ON)
 option (NLOPT_SWIG "use SWIG to build bindings" ON)
+option (NLOPT_BUILD_GPL_LICENSED "build those algorithms licensed under GPL" ON)
 
 if (CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   option (NLOPT_TESTS "build unit tests" ON)
@@ -204,7 +205,6 @@ set (NLOPT_SOURCES
   src/algs/direct/DIRect.c src/algs/direct/direct_wrap.c src/algs/direct/DIRserial.c src/algs/direct/DIRsubrout.c src/algs/direct/direct-internal.h src/algs/direct/direct.h
   src/algs/cdirect/cdirect.c src/algs/cdirect/hybrid.c src/algs/cdirect/cdirect.h
   src/algs/praxis/praxis.c src/algs/praxis/praxis.h
-  src/algs/luksan/plis.c src/algs/luksan/plip.c src/algs/luksan/pnet.c src/algs/luksan/mssubs.c src/algs/luksan/pssubs.c src/algs/luksan/luksan.h
   src/algs/crs/crs.c src/algs/crs/crs.h
   src/algs/mlsl/mlsl.c src/algs/mlsl/mlsl.h
   src/algs/mma/mma.c src/algs/mma/mma.h src/algs/mma/ccsa_quadratic.c
@@ -227,6 +227,10 @@ endif ()
 if (NLOPT_CXX11)
   list (APPEND NLOPT_SOURCES src/algs/ags/data_types.hpp src/algs/ags/evolvent.hpp src/algs/ags/evolvent.cc src/algs/ags/solver.hpp src/algs/ags/solver.cc
   src/algs/ags/local_optimizer.hpp src/algs/ags/local_optimizer.cc src/algs/ags/ags.h src/algs/ags/ags.cc)
+endif ()
+if (NLOPT_BUILD_GPL_LICENSED)
+  target_compile_definitions(${nlopt_lib} PRIVATE NLOPT_BUILD_GPL_LICENSED)
+  list (APPEND NLOPT_SOURCES src/algs/luksan/plis.c src/algs/luksan/plip.c src/algs/luksan/pnet.c src/algs/luksan/mssubs.c src/algs/luksan/pssubs.c src/algs/luksan/luksan.h)
 endif ()
 
 install (FILES ${NLOPT_HEADERS} DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR})
@@ -251,7 +255,6 @@ target_include_directories (${nlopt_lib} PRIVATE
   src/algs/direct
   src/algs/cdirect
   src/algs/praxis
-  src/algs/luksan
   src/algs/crs
   src/algs/mlsl
   src/algs/mma
@@ -264,6 +267,10 @@ target_include_directories (${nlopt_lib} PRIVATE
   src/algs/slsqp
   src/algs/esch
   src/api)
+
+if (NLOPT_BUILD_GPL_LICENSED)
+  target_include_directories (${nlopt_lib} PRIVATE src/algs/luksan)
+endif ()
 
 get_target_property (NLOPT_PRIVATE_INCLUDE_DIRS ${nlopt_lib} INCLUDE_DIRECTORIES)
 target_include_directories (${nlopt_lib} INTERFACE "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/api;${PROJECT_BINARY_DIR}>" "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>")
