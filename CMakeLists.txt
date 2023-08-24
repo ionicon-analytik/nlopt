@@ -229,7 +229,6 @@ if (NLOPT_CXX11)
   src/algs/ags/local_optimizer.hpp src/algs/ags/local_optimizer.cc src/algs/ags/ags.h src/algs/ags/ags.cc)
 endif ()
 if (NLOPT_BUILD_GPL_LICENSED)
-  target_compile_definitions(${nlopt_lib} PRIVATE NLOPT_BUILD_GPL_LICENSED)
   list (APPEND NLOPT_SOURCES src/algs/luksan/plis.c src/algs/luksan/plip.c src/algs/luksan/pnet.c src/algs/luksan/mssubs.c src/algs/luksan/pssubs.c src/algs/luksan/luksan.h)
 endif ()
 
@@ -270,6 +269,7 @@ target_include_directories (${nlopt_lib} PRIVATE
 
 if (NLOPT_BUILD_GPL_LICENSED)
   target_include_directories (${nlopt_lib} PRIVATE src/algs/luksan)
+  target_compile_definitions(${nlopt_lib} PRIVATE NLOPT_BUILD_GPL_LICENSED)
 endif ()
 
 get_target_property (NLOPT_PRIVATE_INCLUDE_DIRS ${nlopt_lib} INCLUDE_DIRECTORIES)
